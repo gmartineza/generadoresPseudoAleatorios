@@ -1,13 +1,13 @@
-def extract_middle_digits(squared, d): # TODO: update?
-    squared_str = str(squared)
-    print("squared_str", squared_str)
-    if (len(squared_str) % 2) != (d % 2):
-        squared_str = '0' + squared_str
-    if len(squared_str) < d:
-        raise ValueError(f"Squared number {squared} has fewer digits than required {d}")
-    middle_start = (len(squared_str) - d) // 2
-    print("squared_str", squared_str)
-    return int(squared_str[middle_start:middle_start + d])
+def extract_middle_digits(malcolm, d): # TODO: update?
+    malcolm_str = str(malcolm)
+    print("malcolm", malcolm_str)
+    if (len(malcolm_str) % 2) != (d % 2):
+        malcolm_str = '0' + malcolm_str
+    if len(malcolm_str) < d:
+        raise ValueError(f"extract_middle_digits: Number {malcolm} has fewer digits than required {d}")
+    middle_start = (len(malcolm_str) - d) // 2
+    print("malcolm", malcolm_str)
+    return int(malcolm_str[middle_start:middle_start + d])
 
 def generate_sequence(n, d, x1, x2):
     if len(str(x1)) != d:
@@ -15,13 +15,14 @@ def generate_sequence(n, d, x1, x2):
     if len(str(x2)) != d:
         raise ValueError(f"Initial number x2 must have exactly {d} digits")
     
-    series = [x1]  # Step 2: Append x1 to series
+    series = [x1, x2]
     
-    for _ in range(n):  # Step 8: Repeat n times
+    for _ in range(n):
         product = x1 * x2
-        x3 = extract_middle_digits(product, d)  # Step 4: Get middle digits
+        x3 = extract_middle_digits(product, d)
         series.append(x3)
-        x1 = x2  # TODO: update this
+        x1 = x2
+        x2 = x3
     
     return series
 
