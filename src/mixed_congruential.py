@@ -1,34 +1,29 @@
-def generate_sequence(x1, a, c, m):
-    sequence = [x1]
+def generate_sequence(n, x0, a, c, m):
+    # Xn+1 = (a * Xn + c) mod m
+    if not all(x > 0 for x in [x0, a, c]):
+        raise ValueError("x0, a, and c must be positive numbers")
+    if not m > max(x0, a, c):
+        raise ValueError("m must be greater than x0, a, and c")
     
-    for i in range(m):
-        x2 = (a * x1 + c) % m
-        sequence.append(x2)
-        x1 = x2
+    sequence = [x0]
+    xn = x0
+    
+    for _ in range(n):
+        xn = (a * xn + c) % m
+        sequence.append(xn)
     
     return sequence
 
 def main():
-    a = int(input("a: "))
-    c = int(input("c: "))
-    x0 = int(input("x0: "))
-    m = int(input("m: "))
-
-    if x0 < 0:
-        raise ValueError("Input didn't satisfy: x0 > 0")
-    elif a < 0:
-        raise ValueError("Input didn't satisfy: a > 0")
-    elif c < 0:
-        raise ValueError("Input didn't satisfy: c > 0")
-    elif m < x0:
-        raise ValueError("Input didn't satisfy: m > x0")
-    elif m < a:
-        raise ValueError("Input didn't satisfy: m > a")
-    elif m < c:
-        raise ValueError("Input didn't satisfy: m > c")
+    n = int(input("Enter number of random numbers to generate: "))
+    x0 = int(input("Enter initial seed (X0): "))
+    a = int(input("Enter multiplier (a): "))
+    c = int(input("Enter additive constant (c): "))
+    m = int(input("Enter module (m): "))
     
-    print(generate_sequence(x0, a, c, m))
-   
+    sequence = generate_sequence(n, x0, a, c, m)
+    print("\nGenerated sequence:")
+    print(sequence)
 
 if __name__ == "__main__":
-    main()
+    main() 

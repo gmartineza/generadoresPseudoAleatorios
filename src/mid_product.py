@@ -1,12 +1,10 @@
 def extract_middle_digits(malcolm, d): # TODO: update?
     malcolm_str = str(malcolm)
-    print("malcolm", malcolm_str)
     if (len(malcolm_str) % 2) != (d % 2):
         malcolm_str = '0' + malcolm_str
     if len(malcolm_str) < d:
         raise ValueError(f"extract_middle_digits: Number {malcolm} has fewer digits than required {d}")
     middle_start = (len(malcolm_str) - d) // 2
-    print("malcolm", malcolm_str)
     return int(malcolm_str[middle_start:middle_start + d])
 
 def generate_sequence(n, d, x1, x2):
