@@ -1,5 +1,3 @@
-import normaliser
-
 def generate_sequence(n, x0, a, m):
     if not all(x > 0 for x in [x0, a]):
         raise ValueError("x0 and a must be positive numbers")

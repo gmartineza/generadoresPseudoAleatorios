@@ -1,5 +1,4 @@
 import math
-import normaliser
 
 def extract_middle_digits(squared, d):
     """Extract d digits from the middle of squared number, padding with zeros if needed."""
@@ -39,19 +38,3 @@ def generate_sequence(n, d, x1):
         x1 = x2  # Step 7: Update x1
     
     return series[2:]
-
-def main():
-    # Get user input
-    n = int(input("Enter number of random numbers to generate: "))
-    d = int(input("Enter number of digits for each number: "))
-    x1 = int(input(f"Enter initial {d}-digit number: "))
-    
-    # Generate and display sequence
-    series = generate_sequence(n, d, x1)
-    print("\nGenerated sequence:")
-    print(series)
-    print("\nNormalized sequence:")
-    print(normaliser.normaliser(series, math.pow(10,d)))
-
-if __name__ == "__main__":
-    main()
