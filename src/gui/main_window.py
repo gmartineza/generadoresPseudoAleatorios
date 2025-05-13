@@ -12,12 +12,14 @@ from prng.fibonacci import generate_sequence as fibonacci_generate
 from prng.congruential_mixed import generate_sequence as mixed_generate
 from prng.congruential_additive import generate_sequence as additive_generate
 from prng.congruential_multiplicative import generate_sequence as multiplicative_generate
+from prng.normaliser import normaliser
+from prng.chi_square import chi_square_test
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("PRNG Generator")
-        self.setMinimumSize(600, 400)
+        self.setMinimumSize(800, 600)  # Increased size for more content
         
         # Create central widget and main layout
         central_widget = QWidget()
@@ -40,7 +42,16 @@ class MainWindow(QMainWindow):
         # Create results display
         self.results_display = QTextEdit()
         self.results_display.setReadOnly(True)
-        self.results_display.setPlaceholderText("Results will appear here...")
+        self.results_display.setPlaceholderText(
+            "Parameter Selection Guidelines:\n\n"
+            "- All parameters are required to be positive integers\n\n"
+            "For best results on all Congruential Methods:\n"
+            "- x0 should be odd\n"
+            "- a should be odd, not divisible by 3 nor 5\n"
+            "- c should be 8 * a +- 3\n"
+            "- m should be a large number, and greater than all other parameters\n"
+            "- For example: m = 2^x - 1 (Mersenne prime)\n"
+        )
         
         # Add widgets to layout
         layout.addWidget(prng_label)
@@ -85,6 +96,8 @@ class MainWindow(QMainWindow):
                     d=params['d'],
                     x1=params['x1']
                 )
+                # Normalize using 10^d
+                normalized = normaliser(sequence, 10 ** params['d'])
             elif method == "Fibonacci":
                 sequence = fibonacci_generate(
                     n=params['n'],
@@ -92,6 +105,7 @@ class MainWindow(QMainWindow):
                     x1=params['x1'],
                     m=params['m']
                 )
+                normalized = normaliser(sequence, params['m'])
             elif method == "Mixed Congruential":
                 sequence = mixed_generate(
                     n=params['n'],
@@ -100,6 +114,7 @@ class MainWindow(QMainWindow):
                     c=params['c'],
                     m=params['m']
                 )
+                normalized = normaliser(sequence, params['m'])
             elif method == "Additive Congruential":
                 sequence = additive_generate(
                     n=params['n'],
@@ -107,6 +122,7 @@ class MainWindow(QMainWindow):
                     c=params['c'],
                     m=params['m']
                 )
+                normalized = normaliser(sequence, params['m'])
             elif method == "Multiplicative Congruential":
                 sequence = multiplicative_generate(
                     n=params['n'],
@@ -114,14 +130,25 @@ class MainWindow(QMainWindow):
                     a=params['a'],
                     m=params['m']
                 )
+                normalized = normaliser(sequence, params['m'])
             
             if sequence is None:
                 raise ValueError("No sequence was generated")
             
+            # Perform Chi-Square test
+            chi_square, p_value, df = chi_square_test(normalized)
+            
             # Display results
             self.results_display.setText(
                 f"Parameters: {params}\n\n"
-                f"Generated sequence:\n{sequence}"
+                f"Generated sequence:\n{sequence}\n\n"
+                f"Normalized sequence:\n{normalized}\n\n"
+                f"Chi-Square Test Results:\n"
+                f"Chi-Square value: {chi_square:.4f}\n"
+                f"Degrees of freedom: {df}\n"
+                f"p-value: {p_value:.4f}\n"
+                f"Interpretation: {'Pass' if p_value > 0.05 else 'Fail'} "
+                f"({'Random' if p_value > 0.05 else 'Not random'})"
             )
         except Exception as e:
             self.results_display.setText(f"Error: {str(e)}") 
