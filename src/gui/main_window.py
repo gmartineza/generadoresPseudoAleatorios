@@ -42,7 +42,16 @@ class MainWindow(QMainWindow):
         # Create results display
         self.results_display = QTextEdit()
         self.results_display.setReadOnly(True)
-        self.results_display.setPlaceholderText("Results will appear here...")
+        self.results_display.setPlaceholderText(
+            "Parameter Selection Guidelines:\n\n"
+            "- All parameters are required to be positive integers\n\n"
+            "For best results on all Congruential Methods:\n"
+            "- x0 should be odd\n"
+            "- a should be odd, not divisible by 3 nor 5\n"
+            "- c should be 8 * a +- 3\n"
+            "- m should be a large number, and greater than all other parameters\n"
+            "- For example: m = 2^x - 1 (Mersenne prime)\n"
+        )
         
         # Add widgets to layout
         layout.addWidget(prng_label)
