@@ -13,7 +13,7 @@ def generate_sequence(n, x0, a, c, m):
         xn = (a * xn + c) % m
         sequence.append(xn)
     
-    return sequence
+    return sequence[1:]
 
 def main():
     # Get user input
@@ -27,6 +27,8 @@ def main():
     sequence = generate_sequence(n, x0, a, c, m)
     print("\nGenerated sequence:")
     print(sequence)
+    print("\nNormalized sequence:")
+    print(normaliser.normaliser(sequence, m))
 
 if __name__ == "__main__":
     main() 
