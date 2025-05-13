@@ -4,7 +4,6 @@ import normaliser
 def extract_middle_digits(squared, d):
     """Extract d digits from the middle of squared number, padding with zeros if needed."""
     squared_str = str(squared)
-    print("squared_str", squared_str)
     # Pad with leading zeros if length is odd
     if (len(squared_str) % 2) != (d % 2):
         squared_str = '0' + squared_str
@@ -13,7 +12,6 @@ def extract_middle_digits(squared, d):
         raise ValueError(f"Squared number {squared} has fewer digits than required {d}")
     # Calculate middle position
     middle_start = (len(squared_str) - d) // 2
-    print("squared_str", squared_str)
     return int(squared_str[middle_start:middle_start + d])
 
 def generate_sequence(n, d, x1):
