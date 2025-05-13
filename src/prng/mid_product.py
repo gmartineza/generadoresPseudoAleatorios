@@ -1,3 +1,7 @@
+import math
+import normaliser
+
+
 def extract_middle_digits(malcolm, d): # TODO: update?
     malcolm_str = str(malcolm)
     if (len(malcolm_str) % 2) != (d % 2):
@@ -8,10 +12,10 @@ def extract_middle_digits(malcolm, d): # TODO: update?
     return int(malcolm_str[middle_start:middle_start + d])
 
 def generate_sequence(n, d, x1, x2):
-    if len(str(x1)) != d:
-        raise ValueError(f"Initial number x1 must have exactly {d} digits")
-    if len(str(x2)) != d:
-        raise ValueError(f"Initial number x2 must have exactly {d} digits")
+    # if len(str(x1)) != d:
+    #     raise ValueError(f"Initial number x1 must have exactly {d} digits")
+    # if len(str(x2)) != d:
+    #     raise ValueError(f"Initial number x2 must have exactly {d} digits")
     
     series = [x1, x2]
     
@@ -22,7 +26,7 @@ def generate_sequence(n, d, x1, x2):
         x1 = x2
         x2 = x3
     
-    return series
+    return series[2:]
 
 def main():
     n = int(input("Enter number of random numbers to generate: "))
@@ -33,6 +37,8 @@ def main():
     series = generate_sequence(n, d, x1, x2)
     print("\nGenerated sequence:")
     print(series)
+    print("\nNormalized sequence:")
+    print(normaliser.normaliser(series, math.pow(10,d)))
 
 if __name__ == "__main__":
     main()
