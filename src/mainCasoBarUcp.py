@@ -13,10 +13,6 @@ LLEGADA = (1.0, 3.0)  # Tasa de llegada de clientes (entre 1 y 3 minutos)
 TIEMPO_SERVICIO_CAJA = (0.3, 0.7)  # Tiempo de servicio en caja (minutos)
 TIEMPO_SERVICIO_BARRA = (2, 4.5)  # Tiempo de servicio en barra (minutos)
 
-valoresLlegada= input(f'ingrese los valores para la llegada {LLEGADA}: ').split(', ')
-valoresServicioCaja= input(f'ingrese los valores para el servicio caja {TIEMPO_SERVICIO_CAJA}: ').split(', ')
-valoresServicioBarra= input(f'ingrese los valores para el servicio barra {TIEMPO_SERVICIO_BARRA}: ').split(', ')
-
 NUM_CAJEROS = 1  # Número de cajeros
 NUM_BARRAS = 1  # Número de barras
 
@@ -46,6 +42,7 @@ def get_next_filename(base_name: str):
 def cliente(env: Environment, nombre: str, quiosco: dict[str, Resource], writer: WriterType, random_func: RandomGeneratorFunction):
     llegada = env.now
     print(f'{nombre} llega al quiosco en {llegada:.2f} minutos.')
+    tiempo_entrega_barra= 0
     
     with quiosco['caja'].request() as request:
         yield request
@@ -119,7 +116,8 @@ def obtenerSiguienteValorDeArchivo():
     sino no funcionara correctamente
     devuelve: un valor flotante de 0 a 1
     """
-    if indiceArchivo > len(valoresArchivo):
+    global indiceArchivo
+    if indiceArchivo > len(valoresArchivo) - 1:
       print("Se usaron todos los valores del archivo") # para que el usuario sepa si tendria que agregar mas valores al archivo
       indiceArchivo= 0
     valorObtenido= float(valoresArchivo[indiceArchivo])
