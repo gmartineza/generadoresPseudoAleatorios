@@ -60,8 +60,11 @@ def cliente(env: Environment, nombre: str, quiosco: dict[str, Resource], writer:
             tiempo_entrega_barra = env.now
             print(f'{nombre} recibe su pedido en barra en {tiempo_entrega_barra:.2f} minutos.')
 
+    atencion_caja_absoluto= tiempo_atencion_caja - llegada
+    atencion_barra_absoluto= 0 if tiempo_entrega_barra == 0 else tiempo_entrega_barra - llegada
+    total_absoluto_atencion= atencion_barra_absoluto + atencion_caja_absoluto
     # Guardar datos en el CSV
-    writer.writerow([nombre, llegada, tiempo_atencion_caja, tiempo_entrega_barra])
+    writer.writerow([nombre, llegada, tiempo_atencion_caja, tiempo_entrega_barra, atencion_caja_absoluto, atencion_barra_absoluto, total_absoluto_atencion])
 
 # Función para simular la llegada de clientes
 def llegada_clientes(env: Environment, quiosco: dict[str, Resource], writer: WriterType, random_func: RandomGeneratorFunction):
@@ -94,19 +97,20 @@ def simular_quiosco(random_func: RandomGeneratorFunction, nombreArchivoCsv= "res
     with open(filename, mode='w', newline='') as file:
         writer = csv.writer(file)
         # Escribir encabezados en el CSV
-        writer.writerow(['Cliente', 'Llegada (min)', 'Atencion en Caja (min)', 'Entrega en Barra (min)'])
+        writer.writerow(['Cliente', 'Llegada (min)', 'Atencion en Caja (min)', 'Entrega en Barra (min)', 'Atencion en caja absoluto', 'Atencion en barra absoluto', 'Total absoluto de atencion'])
         
         env.process(llegada_clientes(env, quiosco, writer, random_func))
         
         # Ejecutar la simulación durante un tiempo determinado (por ejemplo, 120 minutos)
         env.run(until=120)
+    print(f"el csv es {filename}")
 
 indiceValorLlegada= 0
 indiceValorCaja= 0
 IndiceValorBarra= 0
 
 # Para usar una función personalizada:
-with open("valoresGenerados.txt") as archivo:
+with open("corrida.txt") as archivo:
   valoresArchivo= archivo.read().replace("[]", "").split(', ') 
 indiceArchivo= 0 # saber cual es el siguiente valor a tomar
 
@@ -132,4 +136,4 @@ def obtenerValorAleatorio(min: float, max: float):
     return valorFinal
 
     
-simular_quiosco(obtenerValorAleatorio)
+simular_quiosco(obtenerValorAleatorio, "corrida")
