@@ -9,9 +9,10 @@ from typing import TypeVar, Any
 WriterType = TypeVar('WriterType', bound=csv.writer) # truco para obtener el tipo writer de la libreria de csv
 
 # Parámetros de la simulación
-LLEGADA = (1.0, 3.0)  # Tasa de llegada de clientes (entre 1 y 3 minutos)
+TIEMPO_SIMULACION= 120 # tiempo de ejecucion de la simulacion en minutos
+LLEGADA = (1, 3)  # Tasa de llegada de clientes (entre 1 y 3 minutos)
 TIEMPO_SERVICIO_CAJA = (0.3, 0.7)  # Tiempo de servicio en caja (minutos)
-TIEMPO_SERVICIO_BARRA = (2, 4.5)  # Tiempo de servicio en barra (minutos)
+TIEMPO_SERVICIO_BARRA = (2.0, 4.5)  # Tiempo de servicio en barra (minutos)
 
 NUM_CAJEROS = 1  # Número de cajeros
 NUM_BARRAS = 1  # Número de barras
@@ -102,7 +103,7 @@ def simular_quiosco(random_func: RandomGeneratorFunction, nombreArchivoCsv= "res
         env.process(llegada_clientes(env, quiosco, writer, random_func))
         
         # Ejecutar la simulación durante un tiempo determinado (por ejemplo, 120 minutos)
-        env.run(until=120)
+        env.run(until=TIEMPO_SIMULACION)
     print(f"el csv es {filename}")
 
 indiceValorLlegada= 0
@@ -110,7 +111,7 @@ indiceValorCaja= 0
 IndiceValorBarra= 0
 
 # Para usar una función personalizada:
-with open("corrida.txt") as archivo:
+with open("valoresNormalizados.txt") as archivo:
   valoresArchivo= archivo.read().replace("[]", "").split(', ') 
 indiceArchivo= 0 # saber cual es el siguiente valor a tomar
 
