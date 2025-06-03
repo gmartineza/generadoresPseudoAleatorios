@@ -1,0 +1,4 @@
+{
+  "type": "number",
+  "description": "Initial seed (should be odd)"
+}

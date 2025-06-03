@@ -1,27 +1,22 @@
 {
   "properties": {
     "nombre": {
-      "const": "Mixed Congruential"
+      "const": "Congruencial Mixto"
     },
     "n": {
-      "type": "integer",
-      "description": "Number of random numbers to generate"
+      "$ref": "../parameters/n.json"
     },
     "x0": {
-      "type": "number",
-      "description": "Initial seed"
+      "$ref": "../parameters/x0.json"
     },
     "a": {
-      "type": "number",
-      "description": "Multiplier"
+      "$ref": "../parameters/a.json"
     },
     "c": {
-      "type": "number",
-      "description": "Increment"
+      "$ref": "../parameters/c.json"
     },
     "m": {
-      "type": "number",
-      "description": "Modulus"
+      "$ref": "../parameters/m.json"
     }
   },
   "required": [

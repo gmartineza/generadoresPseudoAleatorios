@@ -1,0 +1,4 @@
+{
+  "type": "integer",
+  "description": "Number of digits (should be even for best results)"
+}

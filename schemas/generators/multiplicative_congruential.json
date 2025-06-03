@@ -1,23 +1,19 @@
 {
   "properties": {
     "nombre": {
-      "const": "Multiplicative Congruential"
+      "const": "Congruencial Multiplicativo"
     },
     "n": {
-      "type": "integer",
-      "description": "Number of random numbers to generate"
+      "$ref": "../parameters/n.json"
     },
     "x0": {
-      "type": "number",
-      "description": "Initial seed"
+      "$ref": "../parameters/x0.json"
     },
     "a": {
-      "type": "number",
-      "description": "Multiplier"
+      "$ref": "../parameters/a.json"
     },
     "m": {
-      "type": "number",
-      "description": "Modulus"
+      "$ref": "../parameters/m.json"
     }
   },
   "required": [

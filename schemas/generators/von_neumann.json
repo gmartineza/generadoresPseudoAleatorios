@@ -4,16 +4,13 @@
       "const": "Von Neumann"
     },
     "n": {
-      "type": "integer",
-      "description": "Number of random numbers to generate"
+      "$ref": "../parameters/n.json"
     },
     "d": {
-      "type": "integer",
-      "description": "Number of digits"
+      "$ref": "../parameters/d.json"
     },
     "x1": {
-      "type": "number",
-      "description": "Initial seed"
+      "$ref": "../parameters/x1.json"
     }
   },
   "required": [

@@ -1,0 +1,4 @@
+{
+  "type": "number",
+  "description": "Additive constant (should be 8 * a +- 3)"
+}
