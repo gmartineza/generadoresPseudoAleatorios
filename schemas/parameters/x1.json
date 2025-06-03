@@ -1,4 +1,7 @@
 {
   "type": "number",
-  "description": "Second seed (should be odd)"
+  "description": "Second seed (should be odd)",
+  "not": {
+    "multipleOf": 2
+  }
 }

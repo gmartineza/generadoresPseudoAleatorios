@@ -1,4 +1,5 @@
 {
   "type": "integer",
-  "description": "Number of digits (should be even for best results)"
+  "description": "Number of digits (should be even for best results)",
+  "multipleOf": 2
 }

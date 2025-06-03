@@ -9,9 +9,9 @@
   },
   "parametros_generador": {
     "nombre": "Fibonacci",
-    "m": 0,
-    "n": 0,
-    "x0": 0,
-    "x1": 0
+    "m": 6075,
+    "n": 20,
+    "x0": 365,
+    "x1": 5897
   }
 }

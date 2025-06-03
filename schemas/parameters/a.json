@@ -1,4 +1,17 @@
 {
   "type": "number",
-  "description": "Multiplier (should be odd, not divisible by 3 nor 5)"
+  "description": "Multiplier (should be odd, not divisible by 3 nor 5)",
+  "not": {
+    "anyOf": [
+      {
+        "multipleOf": 2
+      },
+      {
+        "multipleOf": 3
+      },
+      {
+        "multipleOf": 5
+      }
+    ]
+  }
 }
