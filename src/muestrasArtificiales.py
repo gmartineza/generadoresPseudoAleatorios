@@ -1,4 +1,5 @@
 import json
+from collections import Counter
 from prng.mid_square import generate_sequence as von_neumann_generate
 from prng.fibonacci import generate_sequence as fibonacci_generate
 from prng.congruential_mixed import generate_sequence as mixed_generate
@@ -90,10 +91,24 @@ def main():
     # Historia 2: Selección de generador
     datosDeGeneracionNormalizados = generarDatosNormalizados(datos['parametros_generador'])
 
+    # Lista para almacenar los valores artificiales generados
+    valoresArtificiales = []
     for numeroNormalizado in datosDeGeneracionNormalizados:
-      for incremento, fx in tablaDeContingencia:
-          if numeroNormalizado <= fx:
-              print(f"{tablaDeContingencia[fx]}")
+        for nombreVariableArtificial, valor in tablaDeContingencia.items():
+            if numeroNormalizado <= valor:
+                valoresArtificiales.append(nombreVariableArtificial)
+                break  # Una vez encontrado el valor, pasamos al siguiente número
+
+    # Imprimir los valores artificiales
+    print(valoresArtificiales)
+
+    print(f"cantidad generada: {len(valoresArtificiales)}")
+    
+    # Contar y mostrar la frecuencia de cada elemento
+    frecuencias = Counter(valoresArtificiales)
+    print("\nFrecuencia de cada elemento:")
+    for elemento, cantidad in frecuencias.items():
+        print(f"{elemento}: {cantidad}")
 
 
 
