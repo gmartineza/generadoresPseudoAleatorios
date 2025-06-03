@@ -1,5 +1,5 @@
 {
-  "$schema": "./schemas/schema_datos_de_generacion.json",
+  "$schema": "./schemas/base_schema.json",
   "tabla_contingencia": {
     "1": 0.2,
     "2": 0.4,
