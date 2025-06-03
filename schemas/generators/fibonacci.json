@@ -1,0 +1,31 @@
+{
+  "properties": {
+    "nombre": {
+      "const": "Fibonacci"
+    },
+    "n": {
+      "type": "integer",
+      "description": "Number of random numbers to generate"
+    },
+    "x0": {
+      "type": "number",
+      "description": "First initial seed"
+    },
+    "x1": {
+      "type": "number",
+      "description": "Second initial seed"
+    },
+    "m": {
+      "type": "number",
+      "description": "Modulus"
+    }
+  },
+  "required": [
+    "nombre",
+    "n",
+    "x0",
+    "x1",
+    "m"
+  ],
+  "additionalProperties": false
+}

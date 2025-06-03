@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "parametros_generador",
+    "tabla_contingencia"
+  ],
+  "properties": {
+    "parametros_generador": {
+      "type": "object",
+      "description": "parametros necesarios para el generador de numeros pseudoaleatorio",
+      "required": [
+        "nombre"
+      ],
+      "oneOf": [
+        {
+          "$ref": "generators/von_neumann.json"
+        },
+        {
+          "$ref": "generators/fibonacci.json"
+        },
+        {
+          "$ref": "generators/mixed_congruential.json"
+        },
+        {
+          "$ref": "generators/additive_congruential.json"
+        },
+        {
+          "$ref": "generators/multiplicative_congruential.json"
+        }
+      ]
+    },
+    "tabla_contingencia": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number"
+      },
+      "description": "Object where keys are string values and values are numbers"
+    }
+  }
+}

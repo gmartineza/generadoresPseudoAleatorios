@@ -1,0 +1,161 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "parametros_generador",
+    "tabla_contingencia"
+  ],
+  "properties": {
+    "parametros_generador": {
+      "type": "object",
+      "description": "parametros necesarios para el generador de numeros pseudoaleatorio",
+      "required": [
+        "nombre"
+      ],
+      "oneOf": [
+        {
+          "properties": {
+            "nombre": {
+              "const": "Von Neumann"
+            },
+            "n": {
+              "type": "integer"
+            },
+            "d": {
+              "type": "integer"
+            },
+            "x1": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "nombre",
+            "n",
+            "d",
+            "x1"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "nombre": {
+              "const": "Fibonacci"
+            },
+            "n": {
+              "type": "integer"
+            },
+            "x0": {
+              "type": "number"
+            },
+            "x1": {
+              "type": "number"
+            },
+            "m": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "nombre",
+            "n",
+            "x0",
+            "x1",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "nombre": {
+              "const": "Mixed Congruential"
+            },
+            "n": {
+              "type": "integer"
+            },
+            "x0": {
+              "type": "number"
+            },
+            "a": {
+              "type": "number"
+            },
+            "c": {
+              "type": "number"
+            },
+            "m": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "nombre",
+            "n",
+            "x0",
+            "a",
+            "c",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "nombre": {
+              "const": "Additive Congruential"
+            },
+            "n": {
+              "type": "integer"
+            },
+            "x0": {
+              "type": "number"
+            },
+            "c": {
+              "type": "number"
+            },
+            "m": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "nombre",
+            "n",
+            "x0",
+            "c",
+            "m"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "nombre": {
+              "const": "Multiplicative Congruential"
+            },
+            "n": {
+              "type": "integer"
+            },
+            "x0": {
+              "type": "number"
+            },
+            "a": {
+              "type": "number"
+            },
+            "m": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "nombre",
+            "n",
+            "x0",
+            "a",
+            "m"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "tabla_contingencia": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number"
+      },
+      "description": "Object where keys are string values and values are numbers"
+    }
+  }
+}

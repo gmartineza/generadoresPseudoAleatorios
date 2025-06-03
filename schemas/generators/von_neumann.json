@@ -1,0 +1,26 @@
+{
+  "properties": {
+    "nombre": {
+      "const": "Von Neumann"
+    },
+    "n": {
+      "type": "integer",
+      "description": "Number of random numbers to generate"
+    },
+    "d": {
+      "type": "integer",
+      "description": "Number of digits"
+    },
+    "x1": {
+      "type": "number",
+      "description": "Initial seed"
+    }
+  },
+  "required": [
+    "nombre",
+    "n",
+    "d",
+    "x1"
+  ],
+  "additionalProperties": false
+}

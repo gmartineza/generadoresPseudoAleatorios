@@ -1,0 +1,31 @@
+{
+  "properties": {
+    "nombre": {
+      "const": "Additive Congruential"
+    },
+    "n": {
+      "type": "integer",
+      "description": "Number of random numbers to generate"
+    },
+    "x0": {
+      "type": "number",
+      "description": "Initial seed"
+    },
+    "c": {
+      "type": "number",
+      "description": "Increment"
+    },
+    "m": {
+      "type": "number",
+      "description": "Modulus"
+    }
+  },
+  "required": [
+    "nombre",
+    "n",
+    "x0",
+    "c",
+    "m"
+  ],
+  "additionalProperties": false
+}

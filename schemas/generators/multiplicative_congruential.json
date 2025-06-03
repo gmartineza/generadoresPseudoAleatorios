@@ -1,0 +1,31 @@
+{
+  "properties": {
+    "nombre": {
+      "const": "Multiplicative Congruential"
+    },
+    "n": {
+      "type": "integer",
+      "description": "Number of random numbers to generate"
+    },
+    "x0": {
+      "type": "number",
+      "description": "Initial seed"
+    },
+    "a": {
+      "type": "number",
+      "description": "Multiplier"
+    },
+    "m": {
+      "type": "number",
+      "description": "Modulus"
+    }
+  },
+  "required": [
+    "nombre",
+    "n",
+    "x0",
+    "a",
+    "m"
+  ],
+  "additionalProperties": false
+}
