@@ -62,13 +62,28 @@
             "n": {
               "type": "integer",
               "minimum": 1,
-              "description": "Number of trials"
+              "description": "Cantidad de intentos"
             },
             "p": {
               "type": "number",
               "minimum": 0,
               "maximum": 1,
-              "description": "Probability of success"
+              "description": "Probabilidad de éxito"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["tipo", "lambda"],
+          "properties": {
+            "tipo": {
+              "type": "string",
+              "enum": ["poisson"]
+            },
+            "lambda": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Cantidad promedio de eventos en el intervalo"
             }
           }
         }

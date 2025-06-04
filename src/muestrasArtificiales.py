@@ -7,7 +7,7 @@ from prng.congruential_mixed import generate_sequence as mixed_generate
 from prng.congruential_additive import generate_sequence as additive_generate
 from prng.congruential_multiplicative import generate_sequence as multiplicative_generate
 from prng.normaliser import normaliser
-from prng.chi_square import chi_square_test
+from prng.chi_square import chi_square_test, chi_square_test_uniform, chi_square_test_distribution
 from prng.distributions import create_distribution
 
 def cargar_datos_generacion(archivo_json):
@@ -130,21 +130,36 @@ def main():
         numerosNormalizados = generarDatosNormalizados(datos["parametros_generador"])
         
         # Realizar prueba chi-cuadrado en los números normalizados
-        chi_square, p_value, df = chi_square_test(numerosNormalizados)
+        chi_square_uniform, p_value_uniform, df_uniform = chi_square_test_uniform(numerosNormalizados)
         
         # Generar la muestra artificial usando el sistema de distribuciones
-        valoresArtificiales = generarMuestraArtificial(datos)
+        distribution = create_distribution(datos["metodo_distribucion"])
+        valoresArtificiales = distribution.generate(numerosNormalizados)
+        
+        # Obtener probabilidades teóricas
+        theoretical_probs = distribution.get_theoretical_probabilities()
+        
+        # Realizar prueba chi-cuadrado en la distribución
+        chi_square_dist, p_value_dist, df_dist = chi_square_test_distribution(
+            valoresArtificiales, theoretical_probs)
 
         # Imprimir los valores normalizados
         print("\nValores normalizados generados:")
         print(numerosNormalizados)
         
-        # Imprimir resultados de la prueba chi-cuadrado
-        print("\nResultados de la prueba chi-cuadrado:")
-        print(f"Valor chi-cuadrado: {chi_square:.4f}")
-        print(f"Grados de libertad: {df}")
-        print(f"p-valor: {p_value:.4f}")
-        print(f"Interpretación: {'PASA' if p_value > 0.05 else 'NO PASA'} la prueba de aleatoriedad")
+        # Imprimir resultados de la prueba chi-cuadrado para uniformidad
+        print("\nResultados de la prueba chi-cuadrado (uniformidad):")
+        print(f"Valor chi-cuadrado: {chi_square_uniform:.4f}")
+        print(f"Grados de libertad: {df_uniform}")
+        print(f"p-valor: {p_value_uniform:.4f}")
+        print(f"Interpretación: {'PASA' if p_value_uniform > 0.05 else 'NO PASA'} la prueba de aleatoriedad")
+        
+        # Imprimir resultados de la prueba chi-cuadrado para la distribución
+        print("\nResultados de la prueba chi-cuadrado (distribución):")
+        print(f"Valor chi-cuadrado: {chi_square_dist:.4f}")
+        print(f"Grados de libertad: {df_dist}")
+        print(f"p-valor: {p_value_dist:.4f}")
+        print(f"Interpretación: {'PASA' if p_value_dist > 0.05 else 'NO PASA'} la prueba de ajuste a la distribución")
 
         # Imprimir los valores artificiales
         print("\nValores generados según la distribución:")
@@ -153,9 +168,10 @@ def main():
         
         # Contar y mostrar la frecuencia de cada elemento
         frecuencias = Counter(valoresArtificiales)
-        print("\nFrecuencia de cada elemento:")
+        print("\nFrecuencias observadas vs teóricas:")
         for elemento, cantidad in frecuencias.items():
-            print(f"{elemento}: {cantidad}")
+            prob_teorica = theoretical_probs.get(elemento, 0)
+            print(f"{elemento}: {cantidad} \t({cantidad/len(valoresArtificiales)*100:.1f}%) vs {prob_teorica*100:.1f}% teórico")
 
     except Exception as e:
         print(f"Error al generar la muestra: {str(e)}")
