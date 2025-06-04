@@ -32,15 +32,22 @@
     },
     "metodo_distribucion": {
       "type": "object",
-      "required": ["tipo"],
+      "required": [
+        "tipo"
+      ],
       "oneOf": [
         {
           "type": "object",
-          "required": ["tipo", "tabla_contingencia"],
+          "required": [
+            "tipo",
+            "tabla_contingencia"
+          ],
           "properties": {
             "tipo": {
               "type": "string",
-              "enum": ["tabla"]
+              "enum": [
+                "tabla"
+              ]
             },
             "tabla_contingencia": {
               "type": "object",
@@ -53,11 +60,17 @@
         },
         {
           "type": "object",
-          "required": ["tipo", "n", "p"],
+          "required": [
+            "tipo",
+            "n",
+            "p"
+          ],
           "properties": {
             "tipo": {
               "type": "string",
-              "enum": ["binomial"]
+              "enum": [
+                "binomial"
+              ]
             },
             "n": {
               "type": "integer",
@@ -74,11 +87,16 @@
         },
         {
           "type": "object",
-          "required": ["tipo", "lambda"],
+          "required": [
+            "tipo",
+            "lambda"
+          ],
           "properties": {
             "tipo": {
               "type": "string",
-              "enum": ["poisson"]
+              "enum": [
+                "poisson"
+              ]
             },
             "lambda": {
               "type": "number",
@@ -89,11 +107,16 @@
         },
         {
           "type": "object",
-          "required": ["tipo", "lambda"],
+          "required": [
+            "tipo",
+            "lambda"
+          ],
           "properties": {
             "tipo": {
               "type": "string",
-              "enum": ["exponencial"]
+              "enum": [
+                "exponencial"
+              ]
             },
             "lambda": {
               "type": "number",
@@ -117,11 +140,17 @@
         },
         {
           "type": "object",
-          "required": ["tipo", "mu", "sigma"],
+          "required": [
+            "tipo",
+            "mu",
+            "sigma"
+          ],
           "properties": {
             "tipo": {
               "type": "string",
-              "enum": ["normal"]
+              "enum": [
+                "normal"
+              ]
             },
             "mu": {
               "type": "number",
@@ -148,6 +177,64 @@
           }
         }
       ]
+    },
+    "modelo_cola": {
+      "type": "object",
+      "required": [
+        "tipo",
+        "parametros"
+      ],
+      "properties": {
+        "tipo": {
+          "type": "string",
+          "enum": [
+            "MM1",
+            "MM2",
+            "MM1K"
+          ],
+          "description": "Tipo de modelo de cola"
+        },
+        "parametros": {
+          "type": "object",
+          "required": [
+            "lambda_rate",
+            "mu_rate"
+          ],
+          "properties": {
+            "lambda_rate": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Tasa de llegada (clientes por unidad de tiempo)"
+            },
+            "mu_rate": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Tasa de servicio (clientes por unidad de tiempo)"
+            },
+            "K": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Capacidad máxima del sistema (solo para MM1K)"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "tipo": {
+                    "const": "MM1K"
+                  }
+                }
+              },
+              "then": {
+                "required": [
+                  "K"
+                ]
+              }
+            }
+          ]
+        }
+      }
     }
   }
 }

@@ -9,6 +9,7 @@ from prng.congruential_multiplicative import generate_sequence as multiplicative
 from prng.normaliser import normaliser
 from prng.chi_square import chi_square_test, chi_square_test_uniform, chi_square_test_distribution
 from prng.distributions import create_distribution
+from prng.queue_models import create_queue_model
 
 def cargar_datos_generacion(archivo_json):
     """Historia 3: Cargar datos de un archivo JSON."""
@@ -111,6 +112,46 @@ def elejirArchivo():
         except ValueError:
             print("Por favor ingrese un número válido.")
 
+def analizar_cola(datos: dict) -> None:
+    """Analyze queue model metrics"""
+    if "modelo_cola" not in datos:
+        return
+
+    try:
+        # Create queue model
+        queue_model = create_queue_model(
+            datos["modelo_cola"]["tipo"],
+            datos["modelo_cola"]["parametros"]
+        )
+        
+        # Get metrics
+        metrics = queue_model.get_metrics()
+        
+        # Print results
+        print("\n=== MÉTRICAS DEL MODELO DE COLA ===")
+        print(f"Tipo de modelo: {datos['modelo_cola']['tipo']}")
+        print(f"Tasa de llegada (λ): {datos['modelo_cola']['parametros']['lambda_rate']}")
+        print(f"Tasa de servicio (μ): {datos['modelo_cola']['parametros']['mu_rate']}")
+        if datos['modelo_cola']['tipo'] == 'MM1K':
+            print(f"Capacidad máxima (K): {datos['modelo_cola']['parametros']['K']}")
+        
+        print("\nMétricas calculadas:")
+        print(f"Intensidad de tráfico (ρ): {metrics['rho']:.4f}")
+        print(f"Número promedio de clientes en el sistema (L): {metrics['L']:.4f}")
+        print(f"Número promedio de clientes en la cola (Lq): {metrics['Lq']:.4f}")
+        print(f"Tiempo promedio en el sistema (W): {metrics['W']:.4f}")
+        print(f"Tiempo promedio en la cola (Wq): {metrics['Wq']:.4f}")
+        print(f"Probabilidad de sistema vacío (P0): {metrics['P0']:.4f}")
+        
+        if datos['modelo_cola']['tipo'] == 'MM1K':
+            print(f"Probabilidad de sistema lleno (PK): {metrics['PK']:.4f}")
+            print(f"Tasa efectiva de llegada (λ_eff): {metrics['lambda_eff']:.4f}")
+        
+    except ValueError as e:
+        print(f"\nError en el modelo de cola: {str(e)}")
+    except Exception as e:
+        print(f"\nError al analizar el modelo de cola: {str(e)}")
+
 def main():
     # Historia 3: Cargar datos desde un JSON
     datos = elejirArchivo()
@@ -172,6 +213,9 @@ def main():
         for elemento, cantidad in frecuencias.items():
             prob_teorica = theoretical_probs.get(elemento, 0)
             print(f"{elemento}: {cantidad} \t\t({cantidad/len(valoresArtificiales)*100:.1f}%) vs {prob_teorica*100:.1f}% teórico")
+
+        # Analizar modelo de cola si está presente
+        analizar_cola(datos)
 
     except Exception as e:
         print(f"Error al generar la muestra: {str(e)}")

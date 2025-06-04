@@ -1,0 +1,27 @@
+{
+  "$schema": "./schemas/base_schema.json",
+  "metodo_distribucion": {
+    "tipo": "tabla",
+    "tabla_contingencia": {
+      "0": 0.2,
+      "1": 0.2,
+      "2": 0.2,
+      "3": 0.2,
+      "4": 0.2
+    }
+  },
+  "parametros_generador": {
+    "nombre": "Von Neumann",
+    "n": 1000,
+    "d": 4,
+    "x1": 1234
+  },
+  "modelo_cola": {
+    "tipo": "MM1K",
+    "parametros": {
+      "lambda_rate": 4.0,
+      "mu_rate": 5.0,
+      "K": 10
+    }
+  }
+}

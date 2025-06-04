@@ -1,4 +1,5 @@
 {
   "type": "integer",
-  "description": "Number of random numbers"
+  "description": "Number of random numbers",
+  "minimum": 0
 }

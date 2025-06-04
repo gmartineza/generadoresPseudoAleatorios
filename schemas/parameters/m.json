@@ -2,7 +2,7 @@
   "type": "number",
   "description": "Module (should be a large number, greater than all other parameters, preferably a Mersenne prime: 2^x - 1)",
   "minimum": 1000,
-  "exclusiveMinimum": true,
+  "exclusiveMinimum": 0,
   "not": {
     "multipleOf": 2
   },
