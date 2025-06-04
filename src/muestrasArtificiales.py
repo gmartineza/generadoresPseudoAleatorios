@@ -116,7 +116,7 @@ def main():
     if "parametros_generador" not in datos:
         print("ERROR: El archivo JSON no contiene los parametros de generacion.")
         return
-    #TODO: calcular los valores por intervalo de la funcion acumulada (ir acumulando el valor previo)
+
     tablaDeContingenciaRaw: dict[str, float]= datos["tabla_contingencia"]
     tablaDeContingencia: dict[str, float]= {}
     ultimoValorAgregado= 0
@@ -124,6 +124,9 @@ def main():
         # sumar el valor del ultimo agregado
         tablaDeContingencia[nombreValor] = valor + ultimoValorAgregado
         ultimoValorAgregado = tablaDeContingencia[nombreValor]
+
+    if ultimoValorAgregado > 1:
+        raise Exception(f'El porcentaje total dio mas del 100%({ultimoValorAgregado})')
 
     # Historia 2: Selección de generador
     datosDeGeneracionNormalizados = generarDatosNormalizados(datos['parametros_generador'])
