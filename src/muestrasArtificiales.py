@@ -171,7 +171,7 @@ def main():
         print("\nFrecuencias observadas vs teóricas:")
         for elemento, cantidad in frecuencias.items():
             prob_teorica = theoretical_probs.get(elemento, 0)
-            print(f"{elemento}: {cantidad} \t({cantidad/len(valoresArtificiales)*100:.1f}%) vs {prob_teorica*100:.1f}% teórico")
+            print(f"{elemento}: {cantidad} \t\t({cantidad/len(valoresArtificiales)*100:.1f}%) vs {prob_teorica*100:.1f}% teórico")
 
     except Exception as e:
         print(f"Error al generar la muestra: {str(e)}")

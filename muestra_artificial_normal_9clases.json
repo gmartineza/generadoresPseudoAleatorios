@@ -1,0 +1,18 @@
+{
+  "$schema": "./schemas/base_schema.json",
+  "metodo_distribucion": {
+    "tipo": "normal",
+    "mu": 0,
+    "sigma": 1,
+    "num_classes": 9,
+    "class_min": -3,
+    "class_max": 3
+  },
+  "parametros_generador": {
+    "nombre": "Congruencial Multiplicativo",
+    "n": 50,
+    "x0": 651,
+    "a": 121,
+    "m": 4325
+  }
+} 

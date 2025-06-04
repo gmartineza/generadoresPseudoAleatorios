@@ -1,6 +1,6 @@
 from typing import Dict, List, Union, Tuple
 import math
-from scipy.stats import binom, poisson
+from scipy.stats import binom, poisson, expon, norm
 
 class Distribution:
     """Base class for probability distributions."""
@@ -113,6 +113,124 @@ class PoissonDistribution(Distribution):
         max_k = int(self.lambda_ + 3 * math.sqrt(self.lambda_))
         return {k: poisson.pmf(k, self.lambda_) for k in range(max_k + 1)}
 
+class ExponentialDistribution(Distribution):
+    """Handles exponential distribution."""
+    
+    def __init__(self, params: Dict[str, float]):
+        super().__init__(params)
+        self.lambda_ = params["lambda"]  # rate parameter
+        
+        if self.lambda_ <= 0:
+            raise ValueError("Lambda must be positive")
+        
+        # Optional discretization parameters
+        self.discrete_step = params.get("discrete_step")
+        self.discrete_min = params.get("discrete_min")
+        self.discrete_max = params.get("discrete_max")
+    
+    def generate(self, random_numbers: List[float]) -> List[float]:
+        """Generate values using the exponential distribution."""
+        result = []
+        for r in random_numbers:
+            # Use inverse CDF method: x = -ln(1-r)/lambda
+            x = -math.log(1 - r) / self.lambda_
+            
+            # Apply discretization if parameters are provided
+            if self.discrete_step is not None:
+                # Round to nearest step
+                x = round(x / self.discrete_step) * self.discrete_step
+                
+                # Apply min/max bounds if provided
+                if self.discrete_min is not None:
+                    x = max(x, self.discrete_min)
+                if self.discrete_max is not None:
+                    x = min(x, self.discrete_max)
+            
+            result.append(x)
+        return result
+    
+    def get_theoretical_probabilities(self) -> Dict[float, float]:
+        """Get theoretical probabilities for a range of values."""
+        if self.discrete_step is not None:
+            # For discrete case, calculate probabilities for each discrete value
+            min_x = self.discrete_min if self.discrete_min is not None else 0
+            max_x = self.discrete_max if self.discrete_max is not None else 3 / self.lambda_
+            values = [min_x + i * self.discrete_step for i in range(int((max_x - min_x) / self.discrete_step) + 1)]
+            return {x: expon.pdf(x, scale=1/self.lambda_) for x in values}
+        else:
+            # For continuous case, use the original implementation
+            max_x = 3 / self.lambda_  # 3 standard deviations
+            step = max_x / 100  # Divide into 100 intervals
+            return {x: expon.pdf(x, scale=1/self.lambda_) for x in [i * step for i in range(101)]}
+
+class NormalDistribution(Distribution):
+    """Handles normal (Gaussian) distribution."""
+    
+    def __init__(self, params: Dict[str, float]):
+        super().__init__(params)
+        self.mu = params["mu"]  # mean
+        self.sigma = params["sigma"]  # standard deviation
+        
+        if self.sigma <= 0:
+            raise ValueError("Sigma must be positive")
+        
+        # Optional class discretization parameters
+        self.num_classes = params.get("num_classes")
+        self.class_min = params.get("class_min")
+        self.class_max = params.get("class_max")
+    
+    def generate(self, random_numbers: List[float]) -> List[float]:
+        """Generate values using the normal distribution."""
+        result = []
+        for i in range(0, len(random_numbers), 2):
+            if i + 1 >= len(random_numbers):
+                break
+            # Box-Muller transform
+            u1 = random_numbers[i]
+            u2 = random_numbers[i + 1]
+            z0 = math.sqrt(-2 * math.log(u1)) * math.cos(2 * math.pi * u2)
+            z1 = math.sqrt(-2 * math.log(u1)) * math.sin(2 * math.pi * u2)
+            
+            # Transform to desired mean and standard deviation
+            x0 = z0 * self.sigma + self.mu
+            x1 = z1 * self.sigma + self.mu
+            
+            # Apply class discretization if specified
+            if self.num_classes is not None:
+                min_val = self.class_min if self.class_min is not None else -3 * self.sigma
+                max_val = self.class_max if self.class_max is not None else 3 * self.sigma
+                class_width = (max_val - min_val) / self.num_classes
+                
+                # Assign to class midpoint
+                x0 = min_val + (int((x0 - min_val) / class_width) + 0.5) * class_width
+                x1 = min_val + (int((x1 - min_val) / class_width) + 0.5) * class_width
+                
+                # Ensure values are within bounds
+                x0 = max(min(x0, max_val), min_val)
+                x1 = max(min(x1, max_val), min_val)
+            
+            result.append(x0)
+            result.append(x1)
+        return result
+    
+    def get_theoretical_probabilities(self) -> Dict[float, float]:
+        """Get theoretical probabilities for a range of values."""
+        if self.num_classes is not None:
+            # For discrete classes, calculate probabilities for each class
+            min_val = self.class_min if self.class_min is not None else -3 * self.sigma
+            max_val = self.class_max if self.class_max is not None else 3 * self.sigma
+            class_width = (max_val - min_val) / self.num_classes
+            
+            # Calculate class midpoints and their probabilities
+            class_midpoints = [min_val + (i + 0.5) * class_width for i in range(self.num_classes)]
+            return {x: norm.pdf(x, self.mu, self.sigma) for x in class_midpoints}
+        else:
+            # For continuous case, use the original implementation
+            min_x = self.mu - 3 * self.sigma
+            max_x = self.mu + 3 * self.sigma
+            step = (max_x - min_x) / 100  # Divide into 100 intervals
+            return {x: norm.pdf(x, self.mu, self.sigma) for x in [min_x + i * step for i in range(101)]}
+
 def create_distribution(params: Dict) -> Distribution:
     """Factory function to create appropriate distribution object."""
     tipo = params["tipo"]
@@ -122,5 +240,9 @@ def create_distribution(params: Dict) -> Distribution:
         return BinomialDistribution(params)
     elif tipo == "poisson":
         return PoissonDistribution(params)
+    elif tipo == "exponencial":
+        return ExponentialDistribution(params)
+    elif tipo == "normal":
+        return NormalDistribution(params)
     else:
         raise ValueError(f"Unknown distribution type: {tipo}") 

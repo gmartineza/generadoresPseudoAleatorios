@@ -86,6 +86,66 @@
               "description": "Cantidad promedio de eventos en el intervalo"
             }
           }
+        },
+        {
+          "type": "object",
+          "required": ["tipo", "lambda"],
+          "properties": {
+            "tipo": {
+              "type": "string",
+              "enum": ["exponencial"]
+            },
+            "lambda": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Tasa de ocurrencia"
+            },
+            "discrete_step": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Paso de discretización (opcional)"
+            },
+            "discrete_min": {
+              "type": "number",
+              "description": "Valor mínimo para discretización (opcional)"
+            },
+            "discrete_max": {
+              "type": "number",
+              "description": "Valor máximo para discretización (opcional)"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["tipo", "mu", "sigma"],
+          "properties": {
+            "tipo": {
+              "type": "string",
+              "enum": ["normal"]
+            },
+            "mu": {
+              "type": "number",
+              "description": "Media de la distribución"
+            },
+            "sigma": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Desviación estándar"
+            },
+            "num_classes": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Número de clases para discretización (opcional)"
+            },
+            "class_min": {
+              "type": "number",
+              "description": "Valor mínimo para las clases (opcional)"
+            },
+            "class_max": {
+              "type": "number",
+              "description": "Valor máximo para las clases (opcional)"
+            }
+          }
         }
       ]
     }

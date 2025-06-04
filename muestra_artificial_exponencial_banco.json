@@ -1,0 +1,17 @@
+{
+  "$schema": "./schemas/base_schema.json",
+  "metodo_distribucion": {
+    "tipo": "exponencial",
+    "lambda": 0.1,
+    "discrete_step": 2.5,
+    "discrete_min": 2.5,
+    "discrete_max": 37.5
+  },
+  "parametros_generador": {
+    "nombre": "Congruencial Multiplicativo",
+    "n": 50,
+    "x0": 651,
+    "a": 121,
+    "m": 4325
+  }
+} 
