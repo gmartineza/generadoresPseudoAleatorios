@@ -1,0 +1,17 @@
+{
+  "$schema": "./schemas/base_schema.json",
+  "tabla_contingencia": {
+    "mono": 0.2,
+    "perro": 0.4,
+    "gato": 0.6,
+    "loro": 0.8,
+    "tortuga": 1.0
+  },
+  "parametros_generador": {
+    "nombre": "Congruencial Multiplicativo",
+    "n": 50,
+    "x0": 651,
+    "a": 121,
+    "m": 4325
+  }
+}
