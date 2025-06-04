@@ -1,14 +1,9 @@
 {
   "$schema": "./schemas/base_schema.json",
   "metodo_distribucion": {
-    "tipo": "tabla",
-    "tabla_contingencia": {
-      "mono": 0.2,
-      "perro": 0.2,
-      "gato": 0.2,
-      "loro": 0.2,
-      "tortuga": 0.2
-    }
+    "tipo": "binomial",
+    "n": 4,
+    "p": 0.15
   },
   "parametros_generador": {
     "nombre": "Congruencial Multiplicativo",
@@ -17,4 +12,4 @@
     "a": 121,
     "m": 4325
   }
-}
+} 

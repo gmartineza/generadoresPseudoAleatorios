@@ -3,7 +3,7 @@
   "type": "object",
   "required": [
     "parametros_generador",
-    "tabla_contingencia"
+    "metodo_distribucion"
   ],
   "properties": {
     "parametros_generador": {
@@ -30,12 +30,49 @@
         }
       ]
     },
-    "tabla_contingencia": {
+    "metodo_distribucion": {
       "type": "object",
-      "additionalProperties": {
-        "type": "number"
-      },
-      "description": "Object where keys are string values and values are numbers"
+      "required": ["tipo"],
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["tipo", "tabla_contingencia"],
+          "properties": {
+            "tipo": {
+              "type": "string",
+              "enum": ["tabla"]
+            },
+            "tabla_contingencia": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number"
+              },
+              "description": "Object where keys are string values and values are numbers"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["tipo", "n", "p"],
+          "properties": {
+            "tipo": {
+              "type": "string",
+              "enum": ["binomial"]
+            },
+            "n": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Number of trials"
+            },
+            "p": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Probability of success"
+            }
+          }
+        }
+      ]
     }
   }
 }

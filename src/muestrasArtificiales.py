@@ -8,8 +8,7 @@ from prng.congruential_additive import generate_sequence as additive_generate
 from prng.congruential_multiplicative import generate_sequence as multiplicative_generate
 from prng.normaliser import normaliser
 from prng.chi_square import chi_square_test
-
-from prng.normaliser import normaliser
+from prng.distributions import create_distribution
 
 def cargar_datos_generacion(archivo_json):
     """Historia 3: Cargar datos de un archivo JSON."""
@@ -25,55 +24,64 @@ def pedir_parametros(parametros_requeridos):
         parametros[param] = float(valor) if valor.replace('.', '', 1).isdigit() else valor
     return parametros
 
-def generarDatosNormalizados(parametrosDeGeneracion: dict) -> list[float]: # TODO
-  sequence = None  # Initialize sequence variable
-  # Call appropriate PRNG method
-  if parametrosDeGeneracion["nombre"] == "Von Neumann":
-      sequence = von_neumann_generate(
-          n=parametrosDeGeneracion['n'],
-          d=parametrosDeGeneracion['d'],
-          x1=parametrosDeGeneracion['x1']
-      )
-      # Normalize using 10^d
-      normalized = normaliser(sequence, 10 ** parametrosDeGeneracion['d'])
-  elif parametrosDeGeneracion["nombre"] == "Fibonacci":
-      sequence = fibonacci_generate(
-          n=parametrosDeGeneracion['n'],
-          x0=parametrosDeGeneracion['x0'],
-          x1=parametrosDeGeneracion['x1'],
-          m=parametrosDeGeneracion['m']
-      )
-      normalized = normaliser(sequence, parametrosDeGeneracion['m'])
-  elif parametrosDeGeneracion["nombre"] == "Mixed Congruential":
-      sequence = mixed_generate(
-          n=parametrosDeGeneracion['n'],
-          x0=parametrosDeGeneracion['x0'],
-          a=parametrosDeGeneracion['a'],
-          c=parametrosDeGeneracion['c'],
-          m=parametrosDeGeneracion['m']
-      )
-      normalized = normaliser(sequence, parametrosDeGeneracion['m'])
-  elif parametrosDeGeneracion["nombre"] == "Additive Congruential":
-      sequence = additive_generate(
-          n=parametrosDeGeneracion['n'],
-          x0=parametrosDeGeneracion['x0'],
-          c=parametrosDeGeneracion['c'],
-          m=parametrosDeGeneracion['m']
-      )
-      normalized = normaliser(sequence, parametrosDeGeneracion['m'])
-  elif parametrosDeGeneracion["nombre"] == "Congruencial Multiplicativo":
-      sequence = multiplicative_generate(
-          n=parametrosDeGeneracion['n'],
-          x0=parametrosDeGeneracion['x0'],
-          a=parametrosDeGeneracion['a'],
-          m=parametrosDeGeneracion['m']
-      )
-      normalized = normaliser(sequence, parametrosDeGeneracion['m'])
-  
-  if sequence is None:
-      raise ValueError("No sequence was generated")
+def generarDatosNormalizados(parametrosDeGeneracion: dict) -> list[float]:
+    sequence = None  # Initialize sequence variable
+    # Call appropriate PRNG method
+    if parametrosDeGeneracion["nombre"] == "Von Neumann":
+        sequence = von_neumann_generate(
+            n=parametrosDeGeneracion['n'],
+            d=parametrosDeGeneracion['d'],
+            x1=parametrosDeGeneracion['x1']
+        )
+        # Normalize using 10^d
+        normalized = normaliser(sequence, 10 ** parametrosDeGeneracion['d'])
+    elif parametrosDeGeneracion["nombre"] == "Fibonacci":
+        sequence = fibonacci_generate(
+            n=parametrosDeGeneracion['n'],
+            x0=parametrosDeGeneracion['x0'],
+            x1=parametrosDeGeneracion['x1'],
+            m=parametrosDeGeneracion['m']
+        )
+        normalized = normaliser(sequence, parametrosDeGeneracion['m'])
+    elif parametrosDeGeneracion["nombre"] == "Mixed Congruential":
+        sequence = mixed_generate(
+            n=parametrosDeGeneracion['n'],
+            x0=parametrosDeGeneracion['x0'],
+            a=parametrosDeGeneracion['a'],
+            c=parametrosDeGeneracion['c'],
+            m=parametrosDeGeneracion['m']
+        )
+        normalized = normaliser(sequence, parametrosDeGeneracion['m'])
+    elif parametrosDeGeneracion["nombre"] == "Additive Congruential":
+        sequence = additive_generate(
+            n=parametrosDeGeneracion['n'],
+            x0=parametrosDeGeneracion['x0'],
+            c=parametrosDeGeneracion['c'],
+            m=parametrosDeGeneracion['m']
+        )
+        normalized = normaliser(sequence, parametrosDeGeneracion['m'])
+    elif parametrosDeGeneracion["nombre"] == "Congruencial Multiplicativo":
+        sequence = multiplicative_generate(
+            n=parametrosDeGeneracion['n'],
+            x0=parametrosDeGeneracion['x0'],
+            a=parametrosDeGeneracion['a'],
+            m=parametrosDeGeneracion['m']
+        )
+        normalized = normaliser(sequence, parametrosDeGeneracion['m'])
+    
+    if sequence is None:
+        raise ValueError("No sequence was generated")
 
-  return normalized
+    return normalized
+
+def generarMuestraArtificial(datos: dict) -> list:
+    """Generate artificial sample using the specified distribution."""
+    # Generate normalized random numbers
+    normalized = generarDatosNormalizados(datos["parametros_generador"])
+    
+    # Create distribution and generate values
+    distribution = create_distribution(datos["metodo_distribucion"])
+    return distribution.generate(normalized)
 
 def elejirArchivo():
     # pedir al usuario que elija de los archivos que cumplen el patron muestra_artificial_*.json
@@ -109,48 +117,48 @@ def main():
     if datos is None:
         return
 
-    # Historia 4: Procesar la tabla de contingencia
-    if "tabla_contingencia" not in datos:
-        print("ERROR: El archivo JSON no contiene una tabla de contingencia.")
+    # Verificar que el archivo tenga la estructura correcta
+    if "metodo_distribucion" not in datos:
+        print("ERROR: El archivo JSON no contiene el método de distribución.")
         return
     if "parametros_generador" not in datos:
-        print("ERROR: El archivo JSON no contiene los parametros de generacion.")
+        print("ERROR: El archivo JSON no contiene los parámetros de generación.")
         return
 
-    tablaDeContingenciaRaw: dict[str, float]= datos["tabla_contingencia"]
-    tablaDeContingencia: dict[str, float]= {}
-    ultimoValorAgregado= 0
-    for nombreValor, valor in tablaDeContingenciaRaw.items():
-        # sumar el valor del ultimo agregado
-        tablaDeContingencia[nombreValor] = valor + ultimoValorAgregado
-        ultimoValorAgregado = tablaDeContingencia[nombreValor]
+    try:
+        # Generar números normalizados
+        numerosNormalizados = generarDatosNormalizados(datos["parametros_generador"])
+        
+        # Realizar prueba chi-cuadrado en los números normalizados
+        chi_square, p_value, df = chi_square_test(numerosNormalizados)
+        
+        # Generar la muestra artificial usando el sistema de distribuciones
+        valoresArtificiales = generarMuestraArtificial(datos)
 
-    if ultimoValorAgregado > 1:
-        raise Exception(f'El porcentaje total dio mas del 100%({ultimoValorAgregado})')
+        # Imprimir los valores normalizados
+        print("\nValores normalizados generados:")
+        print(numerosNormalizados)
+        
+        # Imprimir resultados de la prueba chi-cuadrado
+        print("\nResultados de la prueba chi-cuadrado:")
+        print(f"Valor chi-cuadrado: {chi_square:.4f}")
+        print(f"Grados de libertad: {df}")
+        print(f"p-valor: {p_value:.4f}")
+        print(f"Interpretación: {'PASA' if p_value > 0.05 else 'NO PASA'} la prueba de aleatoriedad")
 
-    # Historia 2: Selección de generador
-    datosDeGeneracionNormalizados = generarDatosNormalizados(datos['parametros_generador'])
+        # Imprimir los valores artificiales
+        print("\nValores generados según la distribución:")
+        print(valoresArtificiales)
+        print(f"\nCantidad generada: {len(valoresArtificiales)}")
+        
+        # Contar y mostrar la frecuencia de cada elemento
+        frecuencias = Counter(valoresArtificiales)
+        print("\nFrecuencia de cada elemento:")
+        for elemento, cantidad in frecuencias.items():
+            print(f"{elemento}: {cantidad}")
 
-    # Lista para almacenar los valores artificiales generados
-    valoresArtificiales = []
-    for numeroNormalizado in datosDeGeneracionNormalizados:
-        for nombreVariableArtificial, valor in tablaDeContingencia.items():
-            if numeroNormalizado <= valor:
-                valoresArtificiales.append(nombreVariableArtificial)
-                break  # Una vez encontrado el valor, pasamos al siguiente número
-
-    # Imprimir los valores artificiales
-    print(valoresArtificiales)
-
-    print(f"cantidad generada: {len(valoresArtificiales)}")
-    
-    # Contar y mostrar la frecuencia de cada elemento
-    frecuencias = Counter(valoresArtificiales)
-    print("\nFrecuencia de cada elemento:")
-    for elemento, cantidad in frecuencias.items():
-        print(f"{elemento}: {cantidad}")
-
-
+    except Exception as e:
+        print(f"Error al generar la muestra: {str(e)}")
 
 if __name__ == "__main__":
     main()
