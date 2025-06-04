@@ -2,10 +2,10 @@
   "$schema": "./schemas/base_schema.json",
   "tabla_contingencia": {
     "mono": 0.2,
-    "perro": 0.4,
-    "gato": 0.6,
-    "loro": 0.8,
-    "tortuga": 1.0
+    "perro": 0.2,
+    "gato": 0.2,
+    "loro": 0.2,
+    "tortuga": 0.2
   },
   "parametros_generador": {
     "nombre": "Congruencial Multiplicativo",

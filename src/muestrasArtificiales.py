@@ -1,3 +1,4 @@
+import glob
 import json
 from collections import Counter
 from prng.mid_square import generate_sequence as von_neumann_generate
@@ -60,7 +61,7 @@ def generarDatosNormalizados(parametrosDeGeneracion: dict) -> list[float]: # TOD
           m=parametrosDeGeneracion['m']
       )
       normalized = normaliser(sequence, parametrosDeGeneracion['m'])
-  elif parametrosDeGeneracion["nombre"] == "Multiplicative Congruential":
+  elif parametrosDeGeneracion["nombre"] == "Congruencial Multiplicativo":
       sequence = multiplicative_generate(
           n=parametrosDeGeneracion['n'],
           x0=parametrosDeGeneracion['x0'],
@@ -74,11 +75,39 @@ def generarDatosNormalizados(parametrosDeGeneracion: dict) -> list[float]: # TOD
 
   return normalized
 
+def elejirArchivo():
+    # pedir al usuario que elija de los archivos que cumplen el patron muestra_artificial_*.json
 
+    # Obtener lista de archivos que coinciden con el patrón
+    archivos = glob.glob("muestra_artificial_*.json")
+    
+    if not archivos:
+        print("No se encontraron archivos de muestra artificial.")
+        return None
+    
+    # Mostrar opciones al usuario
+    print("\nArchivos disponibles:")
+    for i, archivo in enumerate(archivos, 1):
+        print(f"{i}. {archivo}")
+    
+    # Pedir al usuario que elija
+    while True:
+        try:
+            eleccion = int(input("\nElija un número de archivo: "))
+            if 1 <= eleccion <= len(archivos):
+                filename = archivos[eleccion - 1]
+                print(f"\nArchivo seleccionado: {filename}")
+                return cargar_datos_generacion(filename)
+            else:
+                print("Número de archivo inválido. Intente de nuevo.")
+        except ValueError:
+            print("Por favor ingrese un número válido.")
 
 def main():
     # Historia 3: Cargar datos desde un JSON
-    datos = cargar_datos_generacion("muestraArtificial.json")
+    datos = elejirArchivo()
+    if datos is None:
+        return
 
     # Historia 4: Procesar la tabla de contingencia
     if "tabla_contingencia" not in datos:
@@ -87,7 +116,15 @@ def main():
     if "parametros_generador" not in datos:
         print("ERROR: El archivo JSON no contiene los parametros de generacion.")
         return
-    tablaDeContingencia: dict[str, float]= datos["tabla_contingencia"]
+    #TODO: calcular los valores por intervalo de la funcion acumulada (ir acumulando el valor previo)
+    tablaDeContingenciaRaw: dict[str, float]= datos["tabla_contingencia"]
+    tablaDeContingencia: dict[str, float]= {}
+    ultimoValorAgregado= 0
+    for nombreValor, valor in tablaDeContingenciaRaw.items():
+        # sumar el valor del ultimo agregado
+        tablaDeContingencia[nombreValor] = valor + ultimoValorAgregado
+        ultimoValorAgregado = tablaDeContingencia[nombreValor]
+
     # Historia 2: Selección de generador
     datosDeGeneracionNormalizados = generarDatosNormalizados(datos['parametros_generador'])
 
